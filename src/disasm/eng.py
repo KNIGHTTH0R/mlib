@@ -11,6 +11,8 @@ BB = namedtuple('BB',['begin','end','size',
                       ]
 )
 
+
+
 def is_exit(impr):
     r = False
     if impr['dll'] =='msvcrt.dll':
@@ -32,10 +34,34 @@ class E():
         ## basic blocks...
         self._bb = {}
         self._bb_range = {}
-        
-        self.funcs = []
+
+        ## functions
+        self._funcs = set()
+        self._funcs_obj = {}
+
+        # xrefs
         self.xrefs = {}
+
+        # private for solving switch jumps
         self.switch_jmp = []
+
+    @property
+    def funcs(self):
+        return list(self._funcs)
+
+
+    def function(self,addr):
+        raise NotImplementedError
+    
+        if addr not in self._funcs:
+            ## TODO: find coresponding funcion
+            return None
+
+        if addr in self._funcs_obj:
+            return self._funcs_obj[addr]
+
+        ## TODO build function object
+        return None
         
     def bb(self,a):
         if a in self._bb:
@@ -59,12 +85,14 @@ class E():
         self.xrefs[f].append(t)
         self.xrefs[t].append(f)
 
+    
+        
     def do_address(self,f,a,x=None,func=False):
         #print '%x -> %x' % (x,a)
         if x:
             self.add_xref(x,a)
         if func:
-            self.funcs.append(a)
+            self._funcs.add(a)
         self.q.append((f,a))
 #        self.disas_block(None,a)
 
