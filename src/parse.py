@@ -1,8 +1,9 @@
-import struct
+
 from copy import deepcopy
 chunks = lambda l, n: [l[x: x+n] for x in xrange(0, len(l), n)]
-
 from Crypto.PublicKey import RSA
+
+from mlib.struct import dword
 
 class RSAKEY(object):
 
@@ -24,7 +25,8 @@ class RSAKEY(object):
             return None
         key = {}
         priv = self.bin[0] == "\x07"
-        self.bits,key['e'] = struct.unpack('II',self.bin[12:20])
+        self.bits = dword(self.bin,off=12)
+        key['e'] = dword(self.bin,off=16)
         self.off = 20
         key['n']= self.get_int(8)
         if priv:
@@ -47,9 +49,9 @@ def parse_pubkey_rsa(rsa_bin, ignore_len=False):
     return r[1]
 
 def parse_key_ecc(ecc_bin):
-    s, = struct.unpack('I',ecc_bin[:4])
+    s = dword(ecc_bin)
     ecc_bin = ecc_bin[4:4+s]
-    keys, = struct.unpack('I',ecc_bin[4:8])
+    keys = dword(ecc_bin,off=4)
     t = {'ECS3':'ecdsa_pub_p384','ECS4':'ecdsa_priv_p384'}[ecc_bin[0:4]]
     x = ecc_bin[8:8+keys]
     y = ecc_bin[8+keys:keys*2+8]
