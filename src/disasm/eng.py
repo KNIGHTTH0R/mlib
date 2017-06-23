@@ -125,7 +125,7 @@ class E():
                 self.add_xref(c.val(0),c.ins.address)                
                         
         elif c.is_imm(0) and not c.reg(0):
-            self.do_address(None,c.val(0),c.ins.address,funcs=True)
+            self.do_address(None,c.val(0),c.ins.address,func=True)
             # self.add_xref(c.val(0),c.ins.address)
             # self.q.put(c.val(0))
 
@@ -135,7 +135,10 @@ class E():
         to = []
         ends_with_jump = False
 
-        for c in self.ldr.disasm(addr,0x100):
+        #for c in self.ldr.disasm(addr,0x300):
+        waddr = addr
+        while True:
+            c = self.ldr.disasm(waddr,15).next()
             cc.append(c)
 #            print repr(c),map(c.ins.group_name,c.ins.groups),c.ins.group(1)
             if c.group('ret'):
@@ -168,6 +171,8 @@ class E():
             elif c.mnem == 'mov' and c.is_imm(1) and self.can_be_function(c.val(1)):
                 self.do_address(None,c.val(1),c.ins.address,func=True)
 
+            waddr += c.ins.size
+                
         if len(cc) == 1 and cc[0].mnem == 'jmp':
             ## TODO:this usless indirection that should be delt with
             if c.val(0) in self.ldr.imports:
