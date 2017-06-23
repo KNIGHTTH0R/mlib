@@ -1,6 +1,8 @@
+import struct
 from copy import deepcopy
 chunks = lambda l, n: [l[x: x+n] for x in xrange(0, len(l), n)]
 
+from Crypto.PublicKey import RSA
 
 class RSAKEY(object):
 
