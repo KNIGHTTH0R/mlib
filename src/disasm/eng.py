@@ -86,7 +86,7 @@ class E():
                     return
                 
                 if self.ldr.is_exec(addr):
-                    self.do_address(None,addr,c.ins.address)
+                    self.do_address(None,addr,c.ins.address,func=True)
                     self.add_xref(c.val(0),c.ins.address)
                 
             elif c.val(0) in self.ldr.imports \
@@ -97,7 +97,7 @@ class E():
                 self.add_xref(c.val(0),c.ins.address)                
                         
         elif c.is_imm(0) and not c.reg(0):
-            self.do_address(None,c.val(0),c.ins.address)
+            self.do_address(None,c.val(0),c.ins.address,funcs=True)
             # self.add_xref(c.val(0),c.ins.address)
             # self.q.put(c.val(0))
 
@@ -135,10 +135,10 @@ class E():
                     break
 
             elif c.mnem == 'push' and c.is_imm(0) and self.can_be_function(c.val(0)):
-                self.do_address(None,c.val(0),c.ins.address)
+                self.do_address(None,c.val(0),c.ins.address,func=True)
 
             elif c.mnem == 'mov' and c.is_imm(1) and self.can_be_function(c.val(1)):
-                self.do_address(None,c.val(1),c.ins.address)
+                self.do_address(None,c.val(1),c.ins.address,func=True)
 
         if len(cc) == 1 and cc[0].mnem == 'jmp':
             ## TODO:this usless indirection that should be delt with
@@ -222,7 +222,7 @@ class E():
         
 
         self.q = []        
-        self.do_address(None,self.ldr.entry,None)
+        self.do_address(None,self.ldr.entry,None,func=True)
         self.run_in_loop()
 #        print '[*] dicoverd bb: %d' % len(self._bb)
         # print '[*] problems with %d switch-case' % len(self.switch_jmp)
