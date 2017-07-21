@@ -7,18 +7,29 @@ if st == sys.modules[__name__]:
     st = __import__('struct')
 
 
-qword = lambda d, off=0: st.unpack_from('<Q',d,off)[0]
-dword = lambda d, off=0: st.unpack_from('<I',d,off)[0]
-word  = lambda d, off=0: st.unpack_from('<H',d,off)[0]
-byte  = lambda d ,off=0: st.unpack_from('<B',d,off)[0]
+uqword = lambda d, off=0: st.unpack_from('<Q',d,off)[0]
+udword = lambda d, off=0: st.unpack_from('<I',d,off)[0]
+uword  = lambda d, off=0: st.unpack_from('<H',d,off)[0]
+ubyte  = lambda d ,off=0: st.unpack_from('<B',d,off)[0]
 
 class Structure(ctypes.Structure):
 
     _blacklist_ = []
 
     @classmethod
+    def sizeof(self):
+        return ctypes.sizeof(self)
+    
+    @classmethod
     def parse(self,data):
         return self.from_buffer_copy(data)
+
+    @classmethod
+    def new(self):
+        return self.parse("\x00"*self.sizeof())
+    
+    def pack(self):
+        return buffer(self)[:]
     
     def as_dict(self):
         ret = {}
