@@ -3,6 +3,7 @@ try:
 except ImportError:
     import re
 
+import enum
 from functools import wraps
 from copy import deepcopy
 import gzip as _gz
@@ -25,6 +26,15 @@ def re_match(r,d,cstr):
 get_urls = lambda d,cstr=False: re_match("https?://[\x21-\x7e]{6,}",d,cstr)
 get_strings = lambda d,cstr=False: re_match('[ -~]{3,}',d,cstr)
 
+
+class E(enum.Enum):
+
+    @classmethod
+    def from_val(cls,val):
+        for n,e in cls.__members__.items():
+            if e.value == val:
+                return e
+        return None
 
 # def generic_parse(_data):
 #     try:
