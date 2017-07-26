@@ -1,3 +1,4 @@
+import mlib
 from mlib.struct import udword
 from mlib.winapi.crypto import import_key
 
