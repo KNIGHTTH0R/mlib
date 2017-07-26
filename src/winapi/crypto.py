@@ -36,6 +36,11 @@ class BLOBHEADER(Structure):
 def make_enc_key(pk):
     if type(pk) == str:
         pk = import_key(pk)
+    elif type(pk) == dict:
+        if 'd' in pk:
+            pk = RSA.construct((long(pk['n']),long(pk['e']),long(pk['d'])))
+        else:
+            pk = RSA.construct((long(pk['n']),long(pk['e'])))
 
     if pk.__class__.__name__ != 'PKCS115_Cipher':
         pk = PKCS1_v1_5.new(pk)
@@ -215,7 +220,6 @@ def import_key(data,**kwargs):
     hdr = m.read_struct(BLOBHEADER)
 
     e = BTYPE.from_val(hdr.bType)
-    print e
     if not e:
         raise WrongKeyType
 
