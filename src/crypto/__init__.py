@@ -10,6 +10,7 @@ from Crypto.Cipher    import PKCS1_v1_5
 from Crypto.PublicKey import RSA
 
 from mlib.misc import load_dll
+from mlib.bits import rol
 from . import rc6 as _rc6
 from . import rc2 as _rc2
 from . import spritz as _spritz
@@ -31,6 +32,12 @@ def rsa_new_pkcs(n=1024):
 
 class rc2:
 
+    RC2_BLOCK_SIZE = 8
+    MODE_ECB = 0
+    MODE_CBC = 1
+    PADDING_PKCS5 = 1
+
+    
     @classmethod
     def decrypt(cls,d,key=None, mode=None, IV=None, padding=None):
         return _rc2(key or cls.key).decrypt(d,mode,IV,padding)
