@@ -230,7 +230,9 @@ def import_key(data,**kwargs):
         raise UnsuportedKey
 
     key = obj.parse(m,**kwargs)
-    if hasattr(obj,'make_key'):
+    if kwargs.get('dump_key',None) is True:
+        return key
+    elif hasattr(obj,'make_key'):
         return obj.make_key(c,key,**kwargs)
     else:
         c.key = key

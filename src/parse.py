@@ -3,10 +3,13 @@ from mlib.struct import udword
 from mlib.winapi.crypto import import_key
 
 def parse_pubkey_rsa(rsa_bin, ignore_len=False):
-    r = import_key(rsa_bin)
+    r = import_key(rsa_bin,dump_key=True)
     if not r:
         return rsa_bin.encode('hex')
-    return r[1]
+    r['n'] = str(r['n'])
+    if 'd' in r:
+        r['d'] = str(r['d'])
+    return r
 
 def parse_key_ecc(ecc_bin):
     s = udword(ecc_bin)
