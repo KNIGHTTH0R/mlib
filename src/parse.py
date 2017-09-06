@@ -24,8 +24,14 @@ def parse_asn1_pubkey(asn1):
     import bitarray
     from pyasn1.codec.der.decoder import decode
     bs = decode(asn1)[0][1] ## frist is some oid
-    b=bitarray.bitarray(str(bs).replace(',','').replace(' ','')[1:-1])
-    v = decode(b.tobytes())[0]
+    try:
+        b=bitarray.bitarray(str(bs).replace(',','').replace(' ','')[1:-1])
+        # backward compatibility?
+        v = decode(b.tobytes())[0]
+    except:
+        b = bitarray.bitarray(str(bs))
+        v = decode(b.tobytes())[0]
+
     return {'n': str(v[0]), 'e': int(str(v[1]))}
 
 
