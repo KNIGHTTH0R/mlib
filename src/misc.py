@@ -8,11 +8,12 @@ from functools import wraps
 from copy import deepcopy
 import gzip as _gz
 import errno,signal,os
-import log
 import string,StringIO
 import random
 import hashlib
-log = log.get_logger(__name__)
+
+#import log
+#log = log.get_logger(__name__)
 
 chunks = lambda l, n: [l[x: x+n] for x in xrange(0, len(l), n)]
 BASEPATH = ''
@@ -188,7 +189,8 @@ def __process_ent(d,ret):
             continue
 
         if tag == 'data_end':
-            log.error('fucked up config... skip it...')
+            #log.error('fucked up config... skip it...')
+	    print '[-] fucked up config... skip it...'
             continue
         
         _end = rest.find('data_end')
